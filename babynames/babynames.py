@@ -41,7 +41,29 @@ def extract_names(filename):
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
   # +++your code here+++
-  return
+  f = open(filename,'r')
+  contents = f.read()
+  f.close()
+
+  # finding the year #
+  yearMatches =  re.search(r'Popularity in (\d{4})', contents)
+  yearMatch = yearMatches.group(1)
+    
+  babyMatches = re.findall(r'<td>(\d+).*<td>(\w+)\</td><td>(\w+)', contents);
+
+  rankedList = {} 
+  for match in babyMatches: 
+    if match[1] not in rankedList: 
+      rankedList[match[1]] = match[0] 
+    if match[2] not in rankedList: 
+      rankedList[match[2]] = match[0] 
+
+  sortedKeys = sorted(rankedList.keys()) 
+
+  resultString = yearMatch + "\n" 
+  for key in sortedKeys:
+    resultString += key + " " + rankedList[key] + "\n"
+  return resultString
 
 
 def main():
@@ -51,7 +73,7 @@ def main():
   args = sys.argv[1:]
 
   if not args:
-    print 'usage: [--summaryfile] file [file ...]'
+    print ('usage: [--summaryfile] file [file ...]')
     sys.exit(1)
 
   # Notice the summary flag and remove it from args if it is present.
@@ -61,8 +83,16 @@ def main():
     del args[0]
 
   # +++your code here+++
-  # For each filename, get the names, then either print the text output
-  # or write it to a summary file
-  
+  for i in range(0,len(args)):
+    extractedNames = extract_names(args[i])
+    # For each filename, get the names, then either print the text output
+    # or write it to a summary file
+    if not summary:
+      print( extractedNames )
+    else:
+      f = open(args[i] + ".mysummary",'w')
+      f.write(extractedNames)
+      f.close() 
+
 if __name__ == '__main__':
   main()
