@@ -23,7 +23,17 @@ def get_special_files(directory):
   for name in filenames:
     matches = re.search(r'__\w+__',name)
     if matches != None:
-      print( os.path.abspath(os.path.join(directory,name)))
+      validNames.append(os.path.abspath(os.path.join(directory,name)))
+  return validNames
+
+def copy_special_files_to_dir(paths,newDirectory):
+  if not os.path.exists(newDirectory):
+    os.mkdir(newDirectory)
+
+  for path in paths:
+    print(path)
+    filename = os.path.basename(path)
+    shutil.copy(path,os.path.join(newDirectory,filename))
 
 
 def main():
@@ -40,6 +50,7 @@ def main():
   # todir and tozip are either set from command line
   # or left as the empty string.
   # The args array is left just containing the dirs.
+
   todir = ''
   if args[0] == '--todir':
     todir = args[1]
@@ -56,7 +67,13 @@ def main():
 
   # +++your code here+++
   # Call your functions
-  get_special_files(args[0])
+  paths = get_special_files(args[0])
+  if len(todir) > 0:
+    copy_special_files_to_dir(paths,todir)
+  if len(tozip) > 0:
+    zip_special_files_to_dir() 
+  if len(tozip) == 0 and len(todir) == 0:
+    get_special_files(args[0])
   
 if __name__ == "__main__":
   main()
