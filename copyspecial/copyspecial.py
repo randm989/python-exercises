@@ -35,6 +35,14 @@ def copy_special_files_to_dir(paths,newDirectory):
     filename = os.path.basename(path)
     shutil.copy(path,os.path.join(newDirectory,filename))
 
+def zip_special_files_to_dir(paths,tozip):
+  command = 'zip -j ' + tozip + " "
+  command += " ".join(paths)
+  print(command)
+  try:
+    subprocess.call(command,shell=True)
+  except OSError as e:
+    print( 'damn...', e )
 
 def main():
   # This basic command line argument parsing code is provided.
@@ -67,13 +75,14 @@ def main():
 
   # +++your code here+++
   # Call your functions
-  paths = get_special_files(args[0])
-  if len(todir) > 0:
-    copy_special_files_to_dir(paths,todir)
-  if len(tozip) > 0:
-    zip_special_files_to_dir() 
-  if len(tozip) == 0 and len(todir) == 0:
-    get_special_files(args[0])
+  for i in range(0,len(args)):
+    paths = get_special_files(args[i])
+    if len(todir) > 0:
+      copy_special_files_to_dir(paths,todir)
+    if len(tozip) > 0:
+      zip_special_files_to_dir(paths,tozip) 
+    if len(tozip) == 0 and len(todir) == 0:
+      get_special_files(args[i])
   
 if __name__ == "__main__":
   main()
